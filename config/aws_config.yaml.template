@@ -1,0 +1,55 @@
+# AWS Configuration Template
+# Copy this file to aws_config.yaml and fill in your credentials
+
+aws:
+  # AWS Credentials (use IAM roles in production)
+  # Leave empty to use default credentials chain
+  access_key_id: ""
+  secret_access_key: ""
+  region: "us-east-1"
+  
+  # S3 Configuration
+  s3:
+    bucket_name: "mmm-data-bucket"
+    prefix: "mmm-pipeline/"
+    
+    # Data paths
+    raw_data_path: "raw/"
+    processed_data_path: "processed/"
+    models_path: "models/"
+    results_path: "results/"
+    monitoring_path: "monitoring/"
+  
+  # Redshift Configuration
+  redshift:
+    host: "your-cluster.region.redshift.amazonaws.com"
+    port: 5439
+    database: "mmm_db"
+    user: "admin"
+    password: ""  # Use AWS Secrets Manager in production
+    schema: "public"
+  
+  # SageMaker Configuration
+  sagemaker:
+    role: "arn:aws:iam::ACCOUNT:role/SageMakerRole"
+    instance_type: "ml.m5.xlarge"
+    training_instance_count: 1
+    inference_instance_count: 1
+    inference_instance_type: "ml.m5.large"
+  
+  # Lambda Configuration (for API endpoints)
+  lambda:
+    function_name: "mmm-inference"
+    timeout: 60
+    memory_size: 512
+  
+  # CloudWatch Configuration
+  cloudwatch:
+    log_group: "/aws/mmm/pipeline"
+    metrics_namespace: "MMM/Pipeline"
+  
+  # EventBridge Configuration (for scheduled jobs)
+  eventbridge:
+    retrain_rule_name: "mmm-retrain-schedule"
+    schedule_expression: "rate(30 days)"
+

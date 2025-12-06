@@ -1,0 +1,100 @@
+# Marketing Mix Model Configuration
+
+model:
+  name: "MMM_Production_v1"
+  version: "1.0.0"
+  
+  # Media channels
+  media_channels:
+    - TV
+    - Radio
+    - Digital
+    - Social
+    - Search
+    - Display
+  
+  # External factors
+  external_factors:
+    - gdp_growth
+    - unemployment
+    - inflation
+    - holiday_flag
+    - day_of_week
+    - month
+    - quarter
+  
+  # Adstock parameters (decay rates per channel)
+  adstock:
+    method: "geometric"
+    max_lag: 4
+    decay_rates:
+      TV: 0.6
+      Radio: 0.5
+      Digital: 0.4
+      Social: 0.3
+      Search: 0.2
+      Display: 0.3
+  
+  # Saturation parameters
+  saturation:
+    method: "hill"
+    parameters:
+      TV:
+        alpha: 0.5
+        gamma: 0.5
+      Radio:
+        alpha: 0.6
+        gamma: 0.4
+      Digital:
+        alpha: 0.7
+        gamma: 0.3
+      Social:
+        alpha: 0.6
+        gamma: 0.4
+      Search:
+        alpha: 0.8
+        gamma: 0.2
+      Display:
+        alpha: 0.5
+        gamma: 0.5
+
+data:
+  date_column: "date"
+  value_column: "revenue"
+  expected_frequency: "D"  # Daily
+  
+  # Data validation
+  validation:
+    min_revenue: 0
+    max_revenue: 1000000
+    min_spend: 0
+    max_spend: 100000
+
+training:
+  train_test_split: 0.8
+  validation_split: 0.1
+  
+  # Bayesian regression parameters
+  bayesian_params:
+    n_iter: 300
+    alpha_1: 1e-6
+    alpha_2: 1e-6
+    lambda_1: 1e-6
+    lambda_2: 1e-6
+
+monitoring:
+  performance_threshold: 0.7  # Minimum R²
+  drift_threshold: 0.3
+  window_days: 30
+  retraining_trigger_days: 90
+
+aws:
+  s3_bucket: "mmm-data-bucket"
+  s3_prefix: "mmm-pipeline/"
+  region: "us-east-1"
+  
+  # SageMaker (if using)
+  sagemaker:
+    role: "arn:aws:iam::123456789012:role/SageMakerRole"
+    instance_type: "ml.m5.xlarge"
+
